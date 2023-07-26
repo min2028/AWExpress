@@ -1,0 +1,786 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  awe-backend
+  Sample SAM Template for awe-backend
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+  Api:
+    TracingEnabled: false
+
+Resources:
+  GetUserInfoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: GetUserInfo.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetUserInfo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetUserInfo.Arn
+  GetUserSellOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: GetUserSellOrder.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetUserSellOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/sellorder
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetUserSellOrder.Arn
+  GetUserByEmailFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: GetUserByEmail.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetUserByEmail:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/searchbyemail
+            Method: post
+    Targets:
+      - Arn: !GetAtt GetUserByEmail.Arn
+  GetSellerInfoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: GetSellerInfo.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetSellerInfo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/deposit
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetSellerInfo.Arn
+  GetListedProductsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Products/
+      Handler: GetListedProducts.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetListedProducts:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/listed-products
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetListedProducts.Arn
+  GetProductsStatisticsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Products/
+      Handler: GetProductsStatistics.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        GetProductsStatistics:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/productStatistics
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetProductsStatistics.Arn
+  UserLoginFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserLogin/
+      Handler: UserLogin.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        UserLogin:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/login
+            Method: post
+    Targets:
+      - Arn: !GetAtt UserLogin.Arn
+
+  UpdateUserInfoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: UpdateUserInfo.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        UpdateUserInfo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}
+            Method: patch
+    Targets:
+      - Arn: !GetAtt UpdateUserInfo.Arn
+  UpdateDepositFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: UserInfo/
+      Handler: UpdateDeposit.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        UpdateDeposit:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/deposit
+            Method: patch
+    Targets:
+      - Arn: !GetAtt UpdateDeposit.Arn
+  GetOrderHistoryFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: OrderHistory/
+      Handler: GetOrderHistory.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        UpdateUserInfo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/orderhistory
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetOrderHistory.Arn
+  GetOrderStatusFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Order/
+      Handler: GetOrderStatus.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetOrderStatusFunction:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /order/{orderId}/status
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetOrderStatus.Arn
+  GetCartItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: CartItem/
+      Handler: GetCartItem.get_cart_item
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        GetCartItem:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/cart
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetCartItem.Arn
+
+  PostCartItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: CartItem/
+      Handler: PostCartItem.post_cart_item
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        PostCartItem:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/cart
+            Method: post
+    Targets:
+      - Arn: !GetAtt PostCartItem.Arn
+
+  DeleteCartItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: CartItem/
+      Handler: DeleteCartItem.delete_cart_item
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        DeleteCartItem:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/cart/{productId}
+            Method: delete
+    Targets:
+      - Arn: !GetAtt DeleteCartItem.Arn
+
+  PatchCartItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: CartItem/
+      Handler: PatchCartItem.patch_cart_item
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        PatchCartItem:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/cart/{productId}
+            Method: patch
+    Targets:
+      - Arn: !GetAtt PatchCartItem.Arn
+  ConfirmPaymentFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Payment/
+      Handler: ConfirmPayment.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        ConfirmPayment:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/checkout
+            Method: post
+    Targets:
+      - Arn: !GetAtt OrderCheckout.Arn
+  
+  OrderShipInfoValidateFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Order/
+      Handler: OrderShipInfoValidate.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        OrderShipInfoValidate:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /order/{orderId}/shippingInfo
+            Method: post
+    Targets:
+      - Arn: !GetAtt OrderShipInfoValidate.Arn
+  AdminPromoteFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Admin/
+      Handler: AdminPromote.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        AdminPromote:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /admin/{userId}/promote
+            Method: post
+    Targets:
+      - Arn: !GetAtt AdminPromote.Arn
+
+  AdminDemoteFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Admin/
+      Handler: AdminDemote.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        AdminDemote:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /admin/{userId}/demote
+            Method: post
+    Targets:
+      - Arn: !GetAtt AdminDemote.Arn
+  AdminDeleteFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Admin/
+      Handler: AdminDelete.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        AdminDelete:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /admin/{userId}/delete
+            Method: post
+    Targets:
+      - Arn: !GetAtt AdminDelete.Arn
+  AdminDeletePostFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Admin/
+      Handler: AdminDeletePost.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        AdminDeletePost:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /admin/{userId}/deletepost
+            Method: post
+    Targets:
+      - Arn: !GetAtt AdminDeletePost.Arn
+  AdminCancelOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Admin/
+      Handler: AdminCancelOrder.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        AdminCancelOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /admin/{userId}/cancelorder
+            Method: post
+    Targets:
+      - Arn: !GetAtt AdminCancelOrder.Arn
+  AddProductsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Product/
+      Handler: AddProducts.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        AddProducts:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /product/add
+            Method: post
+    Targets:
+      - Arn: !GetAtt AddProducts.Arn
+  GetProductsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Product/
+      Handler: GetProducts.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        GetProducts:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /product
+            Method: post
+    Targets:
+      - Arn: !GetAtt GetProducts.Arn
+  RemoveProductFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Product/
+      Handler: RemoveProduct.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        RemoveProduct:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/product/remove
+            Method: post
+    Targets:
+      - Arn: !GetAtt RemoveProduct.Arn
+  InitiateShippingFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Shipping/
+      Handler: InitiateShipping.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        InitiateShipping:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /order/ship/initiate
+            Method: post
+    Targets:
+      - Arn: !GetAtt InitiateShipping.Arn
+  ShipoutFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Shipping/
+      Handler: Shipout.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Shipout:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /order/ship/shipout
+            Method: post
+    Targets:
+      - Arn: !GetAtt Shipout.Arn
+  ShippingDeliveredFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Shipping/
+      Handler: ShippingDelivered.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        ShippingDelivered:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /order/ship/delivered
+            Method: post
+    Targets:
+      - Arn: !GetAtt ShippingDelivered.Arn
+  CancelOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Order/
+      Handler: CancelOrder.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        CancelOrderFunction:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user/{userId}/cancelorder
+            Method: post
+    Targets:
+      - Arn: !GetAtt CancelOrder.Arn
+  GetDepartmentProductFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: Product/
+      Handler: GetDepartmentProduct.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Events:
+        GetDepartmentProduct:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /department/products
+            Method: get
+    Targets:
+      - Arn: !GetAtt GetDepartmentProduct.Arn
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Join:
+        - ''
+        - - ApplicationInsights-SAM-
+          - Ref: AWS::StackName
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Fn::Join:
+        - ''
+        - - ApplicationInsights-SAM-
+          - Ref: AWS::StackName
+      AutoConfigurationEnabled: 'true'
+    DependsOn: ApplicationResourceGroup
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  GetUserInfoApi:
+    Description: API Gateway endpoint URL for Prod stage for GetUserInfo function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}"
+  GetUserInfoFunction:
+    Description: GetUserInfo Lambda Function ARN
+    Value: !GetAtt GetUserInfoFunction.Arn
+  GetUserInfoFunctionIamRole:
+    Description: Implicit IAM Role created for GetUserInfo function
+    Value: !GetAtt GetUserInfoFunction.Arn
+  GetUserSellOrderApi:
+    Description: API Gateway endpoint URL for Prod stage for GetUserSellOrder function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/{userId}/sellorder"
+  GetUserSellOrderFunction:
+    Description: GetUserSellOrder Lambda Function ARN
+    Value: !GetAtt GetUserSellOrderFunction.Arn
+  GetUserSellOrderFunctionIamRole:
+    Description: Implicit IAM Role created for GetUserSellOrder function
+    Value: !GetAtt GetUserSellOrderFunction.Arn
+  GetUserByEmailApi:
+    Description: API Gateway endpoint URL for Prod stage for GetUserByEmail function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/searchbyemail"
+  GetUserByEmailFunction:
+    Description: GetUserByEmail Lambda Function ARN
+    Value: !GetAtt GetUserByEmailFunction.Arn
+  GetUserByEmailFunctionIamRole:
+    Description: Implicit IAM Role created for GetUserByEmail function
+    Value: !GetAtt GetUserByEmailFunction.Arn
+  GetSellerInfoApi:
+    Description: API Gateway endpoint URL for Prod stage for GetSellerInfo function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/deposit"
+  GetSellerInfoFunction:
+    Description: GetSellerInfo Lambda Function ARN
+    Value: !GetAtt GetSellerInfoFunction.Arn
+  GetSellerInfoFunctionIamRole:
+    Description: Implicit IAM Role created for GetSellerInfo function
+    Value: !GetAtt GetSellerInfoFunction.Arn
+  GetListedProductsApi:
+    Description: API Gateway endpoint URL for get listed products by sellerId
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/listed-products"
+  GetListedProductsFunction:
+    Description: GetListedProducts Lambda Function ARN
+    Value: !GetAtt GetListedProductsFunction.Arn
+  GetListedProductsIamRole:
+    Description: Implicit IAM Role created for GetListedProducts function
+    Value: !GetAtt GetListedProductsFunctionRole.Arn
+  UserLoginApi:
+    Description: API Gateway endpoint URL for Prod stage for UserLogin function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/UserLogin/"
+  UserLoginFunction:
+    Description: UserLogin Lambda Function ARN
+    Value: !GetAtt UserLoginFunction.Arn
+  UserLoginFunctionIamRole:
+    Description: Implicit IAM Role created for UpdateUserInfo function
+    Value: !GetAtt UpdateUserInfoFunctionRole.Arn
+  UpdateUserInfoApi:
+    Description: API Gateway endpoint URL for Prod stage for UpdateUserInfo function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}"
+  UpdateUserInfoFunction:
+    Description: UpdateUserInfo Lambda Function ARN
+    Value: !GetAtt UpdateUserInfoFunction.Arn
+  UpdateUserInfoFunctionIamRole:
+    Description: Implicit IAM Role created for UpdateUserInfo function
+    Value: !GetAtt UpdateUserInfoFunctionRole.Arn
+  UpdateDepositApi:
+    Description: API Gateway endpoint URL for Prod stage for UpdateDeposit function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/deposit"
+  UpdateDepositFunction:
+    Description: UpdateDeposit Lambda Function ARN
+    Value: !GetAtt UpdateDepositFunction.Arn
+  UpdateDepositFunctionIamRole:
+    Description: Implicit IAM Role created for UpdateDeposit function
+    Value: !GetAtt UpdateDepositFunctionRole.Arn
+  GetCartItemApi:
+    Description: API Gateway endpoint URL for Prod stage for GetCartItem function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/cart"
+  GetCartItemFunction:
+    Description: GetCartItem Lambda Function ARN
+    Value: !GetAtt GetCartItemFunction.Arn
+  GetCartItemFunctionIamRole:
+    Description: Implicit IAM Role created for GetCartItem function
+    Value: !GetAtt GetCartItemFunctionRole.Arn
+  PostCartItemApi:
+    Description: API Gateway endpoint URL for Prod stage for PostCartItem function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/cart"
+  PostCartItemFunction:
+    Description: PostCartItem Lambda Function ARN
+    Value: !GetAtt PostCartItemFunction.Arn
+  PostCartItemFunctionIamRole:
+    Description: Implicit IAM Role created for PostCartItem function
+    Value: !GetAtt PostCartItemFunctionRole.Arn
+  DeleteCartItemApi:
+    Description: API Gateway endpoint URL for Prod stage for DeleteCartItem function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/cart/{productId}"
+  DeleteCartItemFunction:
+    Description: DeleteCartItem Lambda Function ARN
+    Value: !GetAtt DeleteCartItemFunction.Arn
+  DeleteCartItemFunctionIamRole:
+    Description: Implicit IAM Role created for DeleteCartItem function
+    Value: !GetAtt DeleteCartItemFunctionRole.Arn
+  PatchCartItemApi:
+    Description: API Gateway endpoint URL for Prod stage for PatchCartItem function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/cart/{productId}"
+  PatchCartItemFunction:
+    Description: PatchCartItem Lambda Function ARN
+    Value: !GetAtt PatchCartItemFunction.Arn
+  PatchCartItemFunctionIamRole:
+    Description: Implicit IAM Role created for PatchCartItem function
+    Value: !GetAtt PatchCartItemFunctionRole.Arn
+  GetOrderStatusItemApi:
+    Description: API Gateway endpoint URL for Prod stage for GetOrderStatus function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/order/{orderId}/status"
+  GetOrderStatusFunction:
+    Description: GetOrderStatus Lambda Function ARN
+    Value: !GetAtt GetOrderStatusFunction.Arn
+  GetOrderStatusFunctionIamRole:
+    Description: Implicit IAM Role created for GetOrderStatus function
+    Value: !GetAtt GetOrderStatusFunctionRole.Arn
+  GetOrderHistoryItemApi:
+    Description: API Gateway endpoint URL for Prod stage for GetOrderHistory function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/orderhistory"
+  GetOrderHistoryFunction:
+    Description: GetOrderHistory Lambda Function ARN
+    Value: !GetAtt GetOrderHistoryFunction.Arn
+  GetOrderHistoryFunctionIamRole:
+    Description: Implicit IAM Role created for GetOrderStatus function
+    Value: !GetAtt GetOrderHistoryFunctionRole.Arn
+  ConfirmPaymentApi:
+      Description: API Gateway endpoint URL for Prod stage for ConfirmPayment function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/User/{userId}/checkout"
+  ConfirmPaymentFunction:
+      Description: ConfirmPayment Lambda Function ARN
+      Value: !GetAtt ConfirmPaymentFunction.Arn
+  ConfirmPaymentFunctionIamRole:
+      Description: Implicit IAM Role created for ConfirmPayment function
+      Value: !GetAtt ConfirmPaymentFunctionRole.Arn
+  AdminPromoteApi:
+      Description: API Gateway endpoint URL for Prod stage for AdminPromote function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Admin/{userId}/promote"
+  AdminPromoteFunction:
+      Description: AdminPromote Lambda Function ARN
+      Value: !GetAtt AdminPromoteFunction.Arn
+  AdminPromoteIamRole:
+      Description: Implicit IAM Role created for AdminPromote function
+      Value: !GetAtt AdminPromoteFunctionRole.Arn
+  AdminDemoteApi:
+      Description: API Gateway endpoint URL for Prod stage for AdminDemote function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Admin/{userId}/demote"
+  AdminDemoteFunction:
+      Description: AdminDemote Lambda Function ARN
+      Value: !GetAtt AdminDemoteFunction.Arn
+  AdminDemoteIamRole:
+      Description: Implicit IAM Role created for AdminDemote function
+      Value: !GetAtt AdminDemoteFunctionRole.Arn
+  AdminDeleteApi:
+      Description: API Gateway endpoint URL for Prod stage for AdminDelete function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Admin/{userId}/delete"
+  AdminDeleteFunction:
+      Description: AdminDelete Lambda Function ARN
+      Value: !GetAtt AdminDeleteFunction.Arn
+  AdminDeleteIamRole:
+      Description: Implicit IAM Role created for AdminDelete function
+      Value: !GetAtt AdminDeleteFunctionRole.Arn
+  AdminDeletePostApi:
+      Description: API Gateway endpoint URL for Prod stage for AdminDeletePost function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Admin/{userId}/deletepost"
+  AdminDeletePostFunction:
+      Description: AdminDeletePost Lambda Function ARN
+      Value: !GetAtt AdminDeletePostFunction.Arn
+  AdminDeletePostIamRole:
+      Description: Implicit IAM Role created for AdminDeletePost function
+      Value: !GetAtt AdminDeletePostFunctionRole.Arn
+  AdminCancelOrderApi:
+    Description: API Gateway endpoint URL for Prod stage for AdminDeletePost function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Admin/{userId}/cancelOrder"
+  AdminCancelOrderFunction:
+    Description: AdminCancelOrder Lambda Function ARN
+    Value: !GetAtt AdminCancelOrderFunction.Arn
+  AdminCancelOrderIamRole:
+    Description: Implicit IAM Role created for AdminCancelOrder function
+    Value: !GetAtt AdminCancelOrderFunctionRole.Arn
+  AddProductsApi:
+      Description: API Gateway endpoint URL for Prod stage for AddProducts function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/product/add"
+  AddProductsFunction:
+      Description: AddProducts Lambda Function ARN
+      Value: !GetAtt AddProductsFunction.Arn
+  AddProductsIamRole:
+      Description: Implicit IAM Role created for AddProducts function
+      Value: !GetAtt AddProductsFunctionRole.Arn
+  GetProductsApi:
+      Description: API Gateway endpoint URL for Prod stage for GetProducts function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/product"
+  GetProductsFunction:
+      Description: GetProducts Lambda Function ARN
+      Value: !GetAtt GetProductsFunction.Arn
+  GetProductsIamRole:
+      Description: Implicit IAM Role created for GetProducts function
+      Value: !GetAtt GetProductsFunctionRole.Arn
+  GetProductsStatisticsApi:
+    Description: API Gateway endpoint URL for Prod stage for GetProductsStatistics function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/{userId}/productStatistics"
+  GetProductsStatisticsFunction:
+    Description: GetProductsStatistics Lambda Function ARN
+    Value: !GetAtt GetProductsStatisticsFunction.Arn
+  GetProductsStatisticsIamRole:
+    Description: Implicit IAM Role created for GetProductsStatistics function
+    Value: !GetAtt GetProductsStatisticsFunctionRole.Arn
+  RemoveProductApi:
+      Description: API Gateway endpoint URL for Prod stage for RemoveProduct function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/{userId}/product/remove"
+  RemoveProductFunction:
+      Description: RemoveProduct Lambda Function ARN
+      Value: !GetAtt RemoveProductFunction.Arn
+  RemoveProductIamRole:
+      Description: Implicit IAM Role created for RemoveProduct function
+      Value: !GetAtt RemoveProductFunctionRole.Arn
+  InitiateShippingApi:
+      Description: API Gateway endpoint URL for Prod stage for InitiateShipping function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/order/ship/initiate"
+  InitiateShippingFunction:
+      Description: InitiateShipping Lambda Function ARN
+      Value: !GetAtt InitiateShippingFunction.Arn
+  InitiateShippingIamRole:
+      Description: Implicit IAM Role created for InitiateShipping function
+      Value: !GetAtt InitiateShippingFunctionRole.Arn
+  ShipoutApi:
+      Description: API Gateway endpoint URL for Prod stage for Shipout function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/order/ship/shipout"
+  ShipoutFunction:
+      Description: Shipout Lambda Function ARN
+      Value: !GetAtt ShipoutFunction.Arn
+  ShipoutIamRole:
+      Description: Implicit IAM Role created for Shipout function
+      Value: !GetAtt ShipoutFunctionRole.Arn
+  ShippingDeliveredApi:
+      Description: API Gateway endpoint URL for Prod stage for ShippingDelivered function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/order/ship/delivered"
+  ShippingDeliveredFunction:
+      Description: ShippingDelivered Lambda Function ARN
+      Value: !GetAtt ShippingDeliveredFunction.Arn
+  ShippingDeliveredIamRole:
+      Description: Implicit IAM Role created for ShippingDelivered function
+      Value: !GetAtt ShippingDeliveredFunctionRole.Arn
+  CancelOrderApi:
+      Description: API Gateway endpoint URL for Prod stage for CancelOrder function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/{userId}/cancelorder"
+  CancelOrderFunction:
+      Description: CancelOrder Lambda Function ARN
+      Value: !GetAtt CancelOrderFunction.Arn
+  CancelOrderIamRole:
+      Description: Implicit IAM Role created for CancelOrder function
+      Value: !GetAtt CancelOrderFunctionRole.Arn
+  GetDepartmentProductApi:
+      Description: API Gateway endpoint URL for Prod stage for GetDepartmentProduct function
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/department/products"
+  GetDepartmentProductFunction:
+      Description: GetDepartmentProduct Lambda Function ARN
+      Value: !GetAtt GetDepartmentProductFunction.Arn
+  GetDepartmentProductIamRole:
+      Description: Implicit IAM Role created for GetDepartmentProduct function
+      Value: !GetAtt GetDepartmentProductFunctionRole.Arn
+

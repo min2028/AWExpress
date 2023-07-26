@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "backend3"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1l4p9hh3f84tl"
+s3_prefix = "backend3"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []

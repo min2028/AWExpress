@@ -1,0 +1,1190 @@
+{
+	"info": {
+		"_postman_id": "35a2a53c-cfe2-4972-b96a-0a5a3225d1ac",
+		"name": "pass_workflow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24573925"
+	},
+	"item": [
+		{
+			"name": "/user/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.collectionVariables.set(\"userType\", response.userType);",
+							"pm.collectionVariables.set(\"userId\", response.userId);",
+							"pm.test(\"User Exists, Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"Returns all necessary info\", () => {",
+							"    pm.expect(typeof response.userId).to.equal(\"number\");",
+							"    pm.expect(typeof response.email).to.equal(\"string\");",
+							"    pm.expect(typeof response.userType).to.equal(\"string\");",
+							"    pm.expect(response).to.have.property(\"userId\");",
+							"    pm.expect(response).to.have.property(\"email\");",
+							"    pm.expect(response).to.have.property(\"userType\");",
+							"})",
+							"",
+							"pm.collectionVariables.set(\"userId\", response.userId);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/searchbyemail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.collectionVariables.set(\"userType\", response.userType);",
+							"pm.collectionVariables.set(\"userId\", response.userId);",
+							"pm.test(\"User Exists, Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"Returns all necessary info\", () => {",
+							"    pm.expect(typeof response.userId).to.equal(\"number\");",
+							"    pm.expect(typeof response.email).to.equal(\"string\");",
+							"    pm.expect(typeof response.userType).to.equal(\"string\");",
+							"    pm.expect(response).to.have.property(\"userId\");",
+							"    pm.expect(response).to.have.property(\"email\");",
+							"    pm.expect(response).to.have.property(\"userType\");",
+							"})",
+							"",
+							"postman.setNextRequest(\"getUserInfo\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/searchbyemail",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"searchbyemail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserInfo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.test(\"UserId exists; Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"console.log(response);",
+							"pm.test(\"Contains all the keys\", () => {",
+							"    pm.expect(response).to.have.all.keys(",
+							"        \"userEmail\",",
+							"        \"userType\",",
+							"        \"departmentRole\",",
+							"        \"userId\",",
+							"        \"firstname\",",
+							"        \"lastname\",",
+							"        \"address\",",
+							"        \"payment\", ",
+							"        \"deposit\",",
+							"        \"department\");",
+							"})",
+							"",
+							"pm.test(\"Address contains all keys\", () => {",
+							"    pm.expect(response.address).to.have.all.keys(",
+							"        \"city\",",
+							"        \"postalCode\",",
+							"        \"street\",",
+							"        \"province\");",
+							"})",
+							"",
+							"pm.test(\"Deposit contains all keys\", () => {",
+							"    pm.expect(response.deposit).to.have.all.keys(",
+							"        \"accountNumber\",",
+							"        \"transitNumber\",",
+							"        \"institutionNumber\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchUserInfo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let streetAddr = pm.collectionVariables.replaceIn(\"{{$randomStreetAddress}}\")",
+							"pm.collectionVariables.set(\"streetAddr\", streetAddr);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"UserId exists; Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Contains all the keys\", () => {",
+							"    pm.expect(response).to.have.all.keys(",
+							"        \"userId\",",
+							"        \"firstname\",",
+							"        \"lastname\",",
+							"        \"department\",",
+							"        \"address\");",
+							"})",
+							"",
+							"pm.test(\"Address contains all keys\", () => {",
+							"    pm.expect(response.address).to.have.all.keys(",
+							"        \"city\",",
+							"        \"postalCode\",",
+							"        \"street\",",
+							"        \"province\");",
+							"})",
+							"",
+							"pm.test(\"Address updated successfully\", () => {",
+							"    pm.expect(response.address.street).to.eql(pm.collectionVariables.get(\"streetAddr\"))",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"department\": \"Accounting\",\n  \"userType\": \"Admin\",\n  \"firstname\":\"AKM Da\",\n  \"lastname\": \"Grape\",\n  \"address\": {\n    \"street\": \"{{streetAddr}}\",\n    \"city\": \"Grape City\",\n    \"province\": \"BC\",\n    \"postalCode\": \"A1B1C1\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Contains items and numOfPages\", () => {",
+							"    pm.expect(response).to.have.property(\"items\");",
+							"    pm.expect(response).to.have.property(\"numOfPages\");",
+							"})",
+							"",
+							"const items = response.items;",
+							"",
+							"if (items.length) {",
+							"    pm.test(\"items contains all the necessary info\", () => {",
+							"        pm.expect(Array.isArray(response.items)).to.be.true;",
+							"        items.forEach((item) => {",
+							"            pm.expect(item).to.have.all.keys(",
+							"                \"productId\",",
+							"                \"sellerId\",",
+							"                \"productName\",",
+							"                \"price\",",
+							"                \"description\",",
+							"                \"picture\",",
+							"                \"status\",",
+							"                \"quantity\",",
+							"                \"categoryId\",",
+							"                \"postId\",",
+							"                \"originalQuantity\",",
+							"                \"sellerFirstName\",",
+							"                \"sellerLastName\",",
+							"                \"sellerDepartment\",",
+							"                \"availableQuantity\"",
+							"            )",
+							"        })",
+							"        pm.expect(items.length).to.be.eql(50);",
+							"    })",
+							"}",
+							"",
+							"pm.collectionVariables.set(\"num_pages\", response.numOfPages);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"page\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/product",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Contains items\", () => {",
+							"    pm.expect(response).to.have.property(\"items\");",
+							"    pm.expect(Array.isArray(response.items)).to.be.true;",
+							"})",
+							"",
+							"const items = response.items;",
+							"",
+							"if (items.length) {",
+							"    pm.test(\"items contains all the necessary info\", () => {",
+							"        items.forEach((item) => {",
+							"            pm.expect(item).to.have.all.keys(",
+							"                \"productId\",",
+							"                \"sellerId\",",
+							"                \"productName\",",
+							"                \"price\",",
+							"                \"description\",",
+							"                \"picture\",",
+							"                \"status\",",
+							"                \"quantity\",",
+							"                \"categoryId\",",
+							"                \"postId\",",
+							"                \"originalQuantity\",",
+							"                \"sellerFirstName\",",
+							"                \"sellerLastName\",",
+							"                \"sellerDepartment\",",
+							"                \"availableQuantity\"",
+							"            )",
+							"        })",
+							"        pm.expect(items.length).to.be.eql(1);",
+							"    })",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const numOfPages = pm.collectionVariables.get(\"num_pages\");",
+							"const pid51page = numOfPages - 1;",
+							"pm.collectionVariables.set(\"pid51page\", pid51page)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{productId}},\n    \"page\": {{pid51page}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/product",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postCartItem",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"All the info of the new cart item is returned\", () => {",
+							"    pm.expect(response).to.have.all.keys(",
+							"        \"productId\",",
+							"        \"productName\",",
+							"        \"price\",",
+							"        \"quantity\"",
+							"    )",
+							"    pm.collectionVariables.set(\"productId\", response.productId);",
+							"})",
+							"",
+							"postman.setNextRequest(\"getCartItem\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": 52,\n    \"quantity\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCartItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Contains items and the item is valid\", () => {",
+							"    pm.expect(response).to.have.property(\"items\");",
+							"    pm.expect(Array.isArray(response.items)).to.be.true;",
+							"})",
+							"",
+							"pm.test(\"cart items contains the necessary info\", () => {",
+							"    pm.expect(Array.isArray(response.items)).to.be.true;",
+							"    if (response.items.length) {",
+							"        response.items.map((item) => {",
+							"            pm.expect(item).to.have.all.keys(",
+							"                \"productId\",",
+							"                \"productName\",",
+							"                \"description\",",
+							"                \"price\",",
+							"                \"quantity\",",
+							"                \"picture\",",
+							"                \"availableQuantity\"",
+							"            )",
+							"            if (item.productId == pm.collectionVariables.get(\"productId\")) {",
+							"                pm.collectionVariables.set(\"cart_ava_quantity\", item.availableQuantity);",
+							"            }",
+							"        })",
+							"    }",
+							"})",
+							"postman.setNextRequest(\"patchCartItem\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchCartItem",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const cart_ava_quantity = pm.collectionVariables.get(\"cart_ava_quantity\");",
+							"const quantity = cart_ava_quantity - 1;",
+							"pm.collectionVariables.set(\"quantity\",quantity);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response contains all keys\", () => {",
+							"    pm.expect(response).to.have.all.keys(",
+							"        \"productId\",",
+							"        \"quantity\"",
+							"    )",
+							"    pm.expect(response.quantity).to.eql(Number(pm.collectionVariables.get(\"quantity\")))",
+							"})",
+							"",
+							"postman.setNextRequest(\"deleteCartItem\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": {{quantity}} \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart/:productId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						},
+						{
+							"key": "productId",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCartItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Deleted successfully\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Cart item deleted successfully\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart/:productId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						},
+						{
+							"key": "productId",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/sellorder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"OrderItems exists\", () => {",
+							"    pm.expect(response).to.have.property(\"orderItems\");",
+							"});",
+							"",
+							"const orderItems = response.orderItems;",
+							"",
+							"pm.test(\"All info about OrderItems exists\", () => {",
+							"    pm.expect(Array.isArray(orderItems)).to.be.true;",
+							"    if (response.orderItems.length) {",
+							"        console.log(response.orderItems.length)",
+							"        orderItems.forEach((orderItem) => {",
+							"            pm.expect(orderItem).to.have.all.keys(",
+							"                \"orderId\",",
+							"                \"productId\",",
+							"                \"quantity\",",
+							"                \"shipAddress\",",
+							"                \"productName\",",
+							"                \"productPrice\",",
+							"                \"productPicture\"",
+							"            )",
+							"        })",
+							"    }",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/sellorder",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"sellorder"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/productStatistics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"All statistics info returned\", () => {",
+							"   pm.expect(response).to.have.all.keys(",
+							"       \"cart-items\",",
+							"       \"listings\",",
+							"       \"orders\",",
+							"       \"pending-orders\",",
+							"       \"sellPendingOrders\"",
+							"   )",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/productStatistics",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"productStatistics"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/orderhistory",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response contains orders\", () => {",
+							"    pm.expect(response).to.have.property(\"orders\");",
+							"})",
+							"",
+							"const orders = response.orders;",
+							"",
+							"let orderIdList = [];",
+							"",
+							"if (orders.length) {",
+							"    pm.test(\"Have list of orders and it has all the keys\", function () {",
+							"        pm.expect(Array.isArray(orders)).to.be.true;",
+							"            orders.forEach((order) => {",
+							"                pm.expect(order).to.have.all.keys(",
+							"                    \"orderId\",",
+							"                    \"buyerId\",",
+							"                    \"shipAddress\",",
+							"                    \"status\",",
+							"                    \"items\"",
+							"                )",
+							"                orderIdList.push(order.orderId);",
+							"            })",
+							"    });",
+							"",
+							"    pm.collectionVariables.set(\"orderIdList\", orderIdList)",
+							"",
+							"    pm.test(\"Address contains all keys\", function () {",
+							"            orders.forEach((order) => {",
+							"                pm.expect(order.shipAddress).to.have.all.keys(",
+							"                    \"city\",",
+							"                    \"province\",",
+							"                    \"postalCode\",",
+							"                    \"streetAddress\"",
+							"                )",
+							"            })",
+							"    });",
+							"",
+							"    pm.test(\"Contains items and has all keys\", function () {",
+							"            orders.forEach((order) => {",
+							"                pm.expect(Array.isArray(order.items)).to.be.true;",
+							"                if (order.items.length) {",
+							"                    order.items.forEach((item) => {",
+							"                        pm.expect(item).to.have.all.keys(",
+							"                            \"productName\",",
+							"                            \"description\",",
+							"                            \"quantity\",",
+							"                            \"price\",",
+							"                            \"picture\",",
+							"                            \"availableQuantity\"",
+							"                        )",
+							"                    })",
+							"                }",
+							"            })",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/orderhistory",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"orderhistory"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/listed-products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response contains products\", () => {",
+							"    pm.expect(response).to.have.property(\"products\");",
+							"})",
+							"",
+							"const products = response.products;",
+							"",
+							"pm.test(\"products contains all the keys\", ()=> {",
+							"    pm.expect(Array.isArray(products)).to.be.true;",
+							"    if (products.length) {",
+							"        products.forEach((product) => {",
+							"            pm.expect(product).to.have.all.keys(",
+							"                \"productId\",",
+							"                \"sellerId\",",
+							"                \"productName\",",
+							"                \"price\",",
+							"                \"description\",",
+							"                \"picture\",",
+							"                \"quantity\",",
+							"                \"status\",",
+							"                \"categoryId\"",
+							"            )",
+							"        })",
+							"    }",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/listed-products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"listed-products"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response contains deposit\", () => {",
+							"    pm.expect(response).to.have.property(\"deposit\");",
+							"})",
+							"",
+							"const deposit = response.deposit;",
+							"",
+							"pm.test(\"Deposit contains all keys\", () => {",
+							"    pm.expect(deposit).to.have.all.keys(",
+							"        \"accountNumber\",",
+							"        \"transitNumber\",",
+							"        \"institutionNumber\"",
+							"    )",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let bank_acc_num = pm.collectionVariables.replaceIn(\"{{$randomBankAccount}}\")",
+							"pm.collectionVariables.set(\"bank_acc_num\", bank_acc_num);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"UserId exists; Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains deposit\", () => {",
+							"    pm.expect(response).to.have.property(\"deposit\");",
+							"})",
+							"",
+							"const deposit = response.deposit;",
+							"",
+							"pm.test(\"Deposit contains all keys\", () => {",
+							"    pm.expect(deposit).to.have.all.keys(",
+							"        \"accountNumber\",",
+							"        \"transitNumber\",",
+							"        \"institutionNumber\"",
+							"    )",
+							"})",
+							"",
+							"pm.test(\"Deposit info updated successfully\", () => {",
+							"        pm.expect(deposit.accountNumber).to.eql(Number(pm.collectionVariables.get(\"bank_acc_num\")))",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n  \"deposit\":{\n    \"institutionNumber\": 333,\n    \"transitNumber\":33333,\n    \"accountNumber\":{{bank_acc_num}}\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "basePath",
+			"value": "Prod"
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://e06wxf2b0i.execute-api.us-east-1.amazonaws.com/{{basePath}}"
+		},
+		{
+			"key": "email",
+			"value": "ronaldaungkhantmin@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "userType",
+			"value": ""
+		},
+		{
+			"key": "orderIdList",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": ""
+		},
+		{
+			"key": "updated_cart_quantity",
+			"value": ""
+		},
+		{
+			"key": "cart_ava_quantity",
+			"value": ""
+		},
+		{
+			"key": "quantity",
+			"value": ""
+		},
+		{
+			"key": "streetAddr",
+			"value": ""
+		},
+		{
+			"key": "bank_acc_num",
+			"value": ""
+		},
+		{
+			"key": "num_pages",
+			"value": ""
+		},
+		{
+			"key": "pid51page",
+			"value": ""
+		}
+	]
+}

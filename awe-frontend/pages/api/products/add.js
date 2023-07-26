@@ -1,0 +1,35 @@
+import {API_URL, IMAGE_API_URL} from '../config';
+import axios from "axios"
+
+export default async (req, res) => {
+
+  if (req.method === 'POST') {
+    const date = new Date();
+    console.log(`posting to addimage on api gateway now...`)
+    return axios.post(
+      `${IMAGE_API_URL}/product/addimage`,
+      {image: req.body.picture.file, filename: req.body.picture.name},
+      {headers: {'Content-Type': 'application/json', 'authorization': req.headers.authorization}}
+    ).then((response) => {
+      if (response.status === 200) {
+        console.log(`addimage returned, posting rest of product to api gateway now...`)
+        const url = response.data.image_url;
+        axios.post(
+          `${API_URL}/product/add`,
+          {...req.body, picture: url },
+          {headers: {'Content-Type': 'application/json', 'authorization': req.headers.authorization}}
+        ).then((response) => {
+          if (response.status === 200) {
+            console.log(`successfully posted product! returned response is ${JSON.stringify(response.data)}`)
+            return res.status(200).json({...response.data, picture: url});
+          }
+        })
+      }
+    }).catch((err) => {
+      return res.status(err.response.status).json(err.response.data);
+    });
+  } else {
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).json({'error': `Method ${req.method} not allowed`})
+  }
+}

@@ -1,0 +1,1279 @@
+{
+	"info": {
+		"_postman_id": "53ec816a-b2d6-4728-a732-20ac3adfd0b6",
+		"name": "fail_workflow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24573925"
+	},
+	"item": [
+		{
+			"name": "/user/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.collectionVariables.set(\"userType\", response.userType);",
+							"pm.collectionVariables.set(\"userId\", response.userId);",
+							"pm.test(\"User Exists, Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"Returns all necessary info\", () => {",
+							"    pm.expect(typeof response.userId).to.equal(\"number\");",
+							"    pm.expect(typeof response.email).to.equal(\"string\");",
+							"    pm.expect(typeof response.userType).to.equal(\"string\");",
+							"    pm.expect(response).to.have.property(\"userId\");",
+							"    pm.expect(response).to.have.property(\"email\");",
+							"    pm.expect(response).to.have.property(\"userType\");",
+							"})",
+							"",
+							"pm.collectionVariables.set(\"userId\", response.userId);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCartItem_fail_cart_item_not_found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Not Found error\", function () {",
+							"    pm.response.to.have.status(\"Not Found\");",
+							"});",
+							"",
+							"pm.test(\"Cart Item not found\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Cart item is not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart/:productId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						},
+						{
+							"key": "productId",
+							"value": "{{invalid_productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteCartItem_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Cart Item not found\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Cart item is not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart/:productId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						},
+						{
+							"key": "productId",
+							"value": "{{productId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserInfo_fail",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"UserId does not exists; Status code: 400\", () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad request error\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/searchbyemail_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User does not exist, Status code: 400\", () => {",
+							"    pm.response.to.have.status(400);",
+							"})",
+							"",
+							"pm.test(\"Bad request error\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{invalid_email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/searchbyemail",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"searchbyemail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchUserInfo_fail_uid",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let streetAddr = pm.collectionVariables.replaceIn(\"{{$randomStreetAddress}}\")",
+							"pm.collectionVariables.set(\"streetAddr\", streetAddr);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"UserId does not exist; Status code: 400\", () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad request error\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"department\": \"Accounting\",\n  \"userType\": \"Admin\",\n  \"firstname\":\"AKM Da\",\n  \"lastname\": \"Grape\",\n  \"address\": {\n    \"street\": \"{{streetAddr}}\",\n    \"city\": \"Grape City\",\n    \"province\": \"BC\",\n    \"postalCode\": \"A1B1C1\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchUserInfo_pass_optional_keys",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let streetAddr = pm.collectionVariables.replaceIn(\"{{$randomStreetAddress}}\")",
+							"pm.collectionVariables.set(\"streetAddr\", streetAddr);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"UserId does not exist; Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Address updated successfully\", () => {",
+							"    pm.expect(response.address.street).to.eql(pm.collectionVariables.get(\"streetAddr\"))",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"address\": {\n    \"street\": \"{{streetAddr}}\",\n    \"city\": \"Grape City\",\n    \"province\": \"BC\",\n    \"postalCode\": \"A1B1C1\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postCartItem_fail_quantity",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 410\", function () {",
+							"    pm.response.to.have.status(410);",
+							"});",
+							"",
+							"pm.test(\"Invalid quantity\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid quantity\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Quantity not available\", function () {",
+							"    pm.response.to.have.status(\"Gone\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{productId}},\n    \"quantity\": 100000000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postCartItem_pass",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"All the info of the new cart item is returned\", () => {",
+							"    pm.expect(response).to.have.all.keys(",
+							"        \"productId\",",
+							"        \"productName\",",
+							"        \"price\",",
+							"        \"quantity\"",
+							"    )",
+							"    pm.collectionVariables.set(\"productId\", response.productId);",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{productId}},\n    \"quantity\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postCartItem_fail_item_in_cart",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Conflict error\", function () {",
+							"    pm.response.to.have.status(\"Conflict\");",
+							"});",
+							"",
+							"pm.test(\"Item already in cart\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"item is already in the cart\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{productId}},\n    \"quantity\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postCartItem_fail_inactive_item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Invalid quantity\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Item is inactive\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{inactive_productId}},\n    \"quantity\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchCartItem_fail_quantity",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const cart_ava_quantity = pm.collectionVariables.get(\"cart_ava_quantity\");",
+							"const quantity = cart_ava_quantity - 1;",
+							"pm.collectionVariables.set(\"quantity\",quantity);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"",
+							"pm.test(\"Item not in cart\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"The item does not exist in cart\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/cart/:productId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"cart",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						},
+						{
+							"key": "productId",
+							"value": "60"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/sellorder_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/sellorder",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"sellorder"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/productStatistics_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"All statistics info returned but is all 0\", () => {",
+							"   pm.expect(response[\"cart-items\"]).to.eql(0);",
+							"   pm.expect(response[\"listings\"]).to.eql(0);",
+							"   pm.expect(response[\"orders\"]).to.eql(0);",
+							"   pm.expect(response[\"pending-orders\"]).to.eql(0);",
+							"   pm.expect(response[\"sellPendingOrders\"]).to.eql(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/productStatistics",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"productStatistics"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/orderhistory_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Not Found error\", function () {",
+							"    pm.response.to.have.status(\"Not Found\");",
+							"});",
+							"",
+							"pm.test(\"Unable to load order history\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Unable to load order history\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/orderhistory",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"orderhistory"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/listed-products_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response contains products\", () => {",
+							"    pm.expect(response).to.have.property(\"products\");",
+							"})",
+							"",
+							"const products = response.products;",
+							"",
+							"pm.test(\"products is empty\", ()=> {",
+							"    pm.expect(Array.isArray(products)).to.be.true;",
+							"    pm.expect(products.length).to.eql(0);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/listed-products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"listed-products"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit_fail_uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit_fail_uid",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let bank_acc_num = pm.collectionVariables.replaceIn(\"{{$randomBankAccount}}\")",
+							"pm.collectionVariables.set(\"bank_acc_num\", bank_acc_num);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n  \"deposit\":{\n    \"transitNumber\":33333,\n    \"accountNumber\":{{bank_acc_num}}\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{invalid_userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit_fail_req_body",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let bank_acc_num = pm.collectionVariables.replaceIn(\"{{$randomBankAccount}}\")",
+							"pm.collectionVariables.set(\"bank_acc_num\", bank_acc_num);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code: 400\", () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid request body\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n  \"dep\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/:userId/deposit_optional_fields",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let bank_acc_num = pm.collectionVariables.replaceIn(\"{{$randomBankAccount}}\")",
+							"pm.collectionVariables.set(\"bank_acc_num\", bank_acc_num);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"UserId exists; Status code: 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains deposit\", () => {",
+							"    pm.expect(response).to.have.property(\"deposit\");",
+							"})",
+							"",
+							"const deposit = response.deposit;",
+							"",
+							"pm.test(\"Deposit contains all keys\", () => {",
+							"    pm.expect(deposit).to.have.all.keys(",
+							"        \"accountNumber\"",
+							"    )",
+							"})",
+							"",
+							"pm.test(\"Deposit info updated successfully\", () => {",
+							"        pm.expect(deposit.accountNumber).to.eql(Number(pm.collectionVariables.get(\"bank_acc_num\")))",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n  \"deposit\":{\n    \"accountNumber\":{{bank_acc_num}}\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/:userId/deposit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						":userId",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products_invalid_pid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Contains items\", () => {",
+							"    pm.expect(response).to.have.property(\"items\");",
+							"    pm.expect(response).to.have.property(\"numOfPages\");",
+							"    pm.expect(Array.isArray(response.items)).to.be.true;",
+							"})",
+							"",
+							"const items = response.items;",
+							"",
+							"pm.test(\"Invalid productId will have length 0\", () => {",
+							"    pm.expect(items.length).to.be.eql(0);",
+							"    pm.expect(response.numOfPages).to.be.eql(0);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": {{invalid_productId}},\n    \"page\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/product",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "basePath",
+			"value": "Prod"
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://e06wxf2b0i.execute-api.us-east-1.amazonaws.com/{{basePath}}"
+		},
+		{
+			"key": "email",
+			"value": "testakm@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "userType",
+			"value": ""
+		},
+		{
+			"key": "orderIdList",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": "54"
+		},
+		{
+			"key": "updated_cart_quantity",
+			"value": ""
+		},
+		{
+			"key": "cart_ava_quantity",
+			"value": ""
+		},
+		{
+			"key": "quantity",
+			"value": ""
+		},
+		{
+			"key": "streetAddr",
+			"value": ""
+		},
+		{
+			"key": "bank_acc_num",
+			"value": ""
+		},
+		{
+			"key": "invalid_userId",
+			"value": "10000000",
+			"type": "string"
+		},
+		{
+			"key": "invalid_email",
+			"value": "kadguhaiu7985@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "invalid_productId",
+			"value": "10000000000",
+			"type": "string"
+		},
+		{
+			"key": "inactive_productId",
+			"value": "109",
+			"type": "string"
+		}
+	]
+}
